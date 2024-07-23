@@ -1,4 +1,5 @@
 const express = require('express');
+const Model = require('../models/userModel');
 
 const router = express.Router();
 
@@ -26,3 +27,4 @@ module.exports = router;
 // npm install express
 // npm install dev script 
 // add dev script 
+//npm i nodemon ----->restarts server whenever we do changes in file...
