@@ -3,28 +3,79 @@ const Model = require('../models/userModel');
 
 const router = express.Router();
 
-router.get('/add', (req, res) => {
-    res.send('response from user add');
-});
+router.post('/add', (req, res) => {
+    console.log(req.body);
 
-router.get('getall',(req,res)=>{
-    res.send('response from user update');
+    new Model(req.body).save()
+        .then((result) => {
+            res.status(200).json(result);
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
-
-router.get('/getbyid',(req,res)=>{
-    res.send('response from user getbyid')
-});
-
-router.get('/update',(req,res)=>{
-    res.send('response from user update')
+//:denotes url parameter 
+router.get('/getbycity/:city',(req,res)=>{
+    console.log(req.params.city);
+    Model.find({city:req.params.city})
+    .then((result) => {
+        res.status(200).json(result);
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+    });
 })
-router.get('/delete',(req,res)=>{
-    res.send('response from user delete')
+
+router.get('/getbyemail/:email',(req,res)=>{
+    Model.findOne({email:req.params.email})
+    .then((result) => {
+        res.status(200).json(result);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+})
+
+
+router.get('/getall', (req, res) => {
+    Model.find()
+        .then((result) => {
+            res.status(200).json(result);
+
+        }).catch((err) => {
+            res.status(500).json(err);
+
+        });
+});
+
+router.get('/getbyid/:id', (req, res) => {
+    Model.findById(req.params.id)
+    .then((result) => {
+        res.status(200).json(result);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+});
+
+router.put('/update/:id', (req, res) => {
+    Model.findByIdAndUpdate(req.params.id,req.body,{new:true})
+    .then((result) => {
+        res.status(200).json(result);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
+})
+router.delete('/delete/:id', (req, res) => {
+    Model.findByIdAndDelete(req.params.id)
+    .then((result) => {
+        res.status(200).json(result);
+    }).catch((err) => {
+        res.status(500).json(err);
+    });
 })
 module.exports = router;
 // COMMANDS
 //npm init -y
 // npm install express
-// npm install dev script 
-// add dev script 
+// npm install dev script
+// add dev script
 //npm i nodemon ----->restarts server whenever we do changes in file...
