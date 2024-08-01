@@ -1,5 +1,8 @@
 const express = require('express');
 const Model = require('../models/userModel');
+const { JsonWebTokenError } = require('jsonwebtoken');
+require('dotenv').config();
+
 
 const router = express.Router();
 
@@ -71,6 +74,42 @@ router.delete('/delete/:id', (req, res) => {
     }).catch((err) => {
         res.status(500).json(err);
     });
+
+    router.post('/authenticate', (req, res)=>{
+        Model.findOne(req.body)
+        .then((result) => {
+            if(result){
+                //payload, secretkey, expiry
+
+                const {_id,email,password}=result;
+                const payload ={_id,email,password}
+
+                JsonWebTokenError.sign(
+                    payload,
+                    process.env.JWT_SECERET,
+                    {expiresIn:'1hr'},
+                    (err,token) => {
+                        if(err){
+                            console.log(err);
+                            res.status(500).json(err);
+                        }
+                        else{
+                            res.status(200).json({token:token});
+                        }
+                    }
+                ) 
+    
+            }
+            else{
+                res.status(401).json({message : "Invalid Credentials"}  );
+            }
+        })
+        .catch((err) => {
+             console.log(err);
+            res.status(500).json(err);
+        });
+    })
+
 })
 module.exports = router;
 // COMMANDS

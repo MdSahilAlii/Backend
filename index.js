@@ -2,6 +2,7 @@
 const express= require('express');
 const userRouter=require('./router/userRouter')
 const productRouter =require('./router/productRouter');
+const cors = require('cors');
 
 
 //initialize express
@@ -10,6 +11,10 @@ const app=express();
 const port =5000;
 
 //middleware
+// for taking data from frontend
+app.use(cors({
+    origin:"http://localhost:3000"
+}))
 
 //if data is coming in json then convert in javscript format
 app.use(express.json());
